@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 # *(Not important) TODO: if wait too long, refresh the driver
 SLEEP_TIME = 0
 PAR_SLEEP_TIME = 0
-FILE_NAME = "auction4.csv"
+FILE_NAME = "auction.csv"
 HTML = "https://sf.taobao.com/item_list.htm?spm=a213w.7398504.filter.23.10753e1f1cgkra&auction_source=0" \
        "&city=&province=&st_param=-1&auction_start_seg=-1"
 

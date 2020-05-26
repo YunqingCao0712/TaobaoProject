@@ -131,7 +131,7 @@ locations_num = len(locations.find_elements_by_xpath('//li[@class ="triggle"]'))
 status_num = len(status.find_elements_by_tag_name("em"))
 
 ### Data collection
-for i in range(13, types_num):
+for i in range(1, types_num):
     click_type(i)
     for j in range(-1, locations_num):
         click_location(j)

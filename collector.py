@@ -5,7 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-FILE_NAME = "auction.csv"
+# *(Not important) TODO: Optimize too much, may finish when get free
+SLEEP_TIME = 2
+PAR_SLEEP_TIME = 1
+FILE_NAME = "auction3.csv"
 HTML = "https://sf.taobao.com/item_list.htm?spm=a213w.7398504.filter.23.10753e1f1cgkra&auction_source=0" \
        "&city=&province=&st_param=-1&auction_start_seg=-1"
 
@@ -14,7 +17,6 @@ desired_capabilities = DesiredCapabilities.CHROME
 desired_capabilities["pageLoadStrategy"] = "none"
 driver1 = webdriver.Chrome(desired_capabilities=desired_capabilities)
 driver1.get(HTML)
-
 wait = WebDriverWait(driver1, 20)
 wait.until(EC.presence_of_element_located((By.XPATH, '//em[@class="count"]')))
 print("found")
@@ -79,6 +81,7 @@ def click_status(index_: int) -> None:
     else:
         status_ = select_filter_.find_elements_by_xpath('//ul[@class="condition"]')[-1].find_elements_by_tag_name("em")  # Checked
         status_[index_].click()
+        time.sleep(1)
         wait.until(EC.presence_of_element_located((By.XPATH, '//em[@class="count"]')))
         # print("status found")
         driver1.execute_script("window.stop();")
@@ -88,23 +91,23 @@ def click_back_type() -> None:
     select_filter_ = driver1.find_element_by_xpath('//div[@class="sf-filter J_Filter"]')
     type_ = select_filter_.find_elements_by_xpath('//div[@class="unlimited"]')[0]  # Checked
     type_.find_element_by_tag_name("a").click()
-    time.sleep(1)
+    time.sleep(SLEEP_TIME)
 
 def click_back_location() -> None:
     select_filter_ = driver1.find_element_by_xpath('//div[@class="sf-filter J_Filter"]')
     location_ = select_filter_.find_elements_by_xpath('//div[@class="unlimited"]')[1]  # Checked
     location_.find_element_by_tag_name("a").click()
-    time.sleep(1)
+    time.sleep(SLEEP_TIME)
 
 def click_back_status() -> None:
     select_filter_ = driver1.find_element_by_xpath('//div[@class="sf-filter J_Filter"]')
     status_ = select_filter_.find_elements_by_xpath('//div[@class="unlimited"]')[2]  # Checked
     status_.find_element_by_tag_name("a").click()
-    time.sleep(1)
+    time.sleep(SLEEP_TIME)
 
 ### Open the csv file
 f = open(FILE_NAME, "w", encoding="utf8")
-f.write("Type, Location, Status, Num")
+f.write("Type, Location, Status, Num" + "\n")
 
 # Due to the design of the web, each click will cause refresh thus needing to find the link again.
 select_filter = driver1.find_element_by_xpath('//div[@class="sf-filter J_Filter"]')
@@ -117,7 +120,7 @@ status_num = len(status.find_elements_by_tag_name("em"))
 
 
 ### Data collection
-for i in range(-1,types_num):
+for i in range(4, types_num):
     click_type(i)
     for j in range(-1, locations_num):
         click_location(j)
@@ -131,7 +134,7 @@ for i in range(-1,types_num):
             if i == -1:
                 type_str = "不限,"
             else:
-                type_str = types.find_element_by_tag_name('li').find_element_by_tag_name("a").text + ","
+                type_str = types.find_elements_by_tag_name('li')[i].find_element_by_tag_name("a").text + ","
             if j == -1:
                 location_str = "不限,"
             else:
